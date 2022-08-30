@@ -6,6 +6,9 @@
     "*": ["src/*"],
       "tests": ["tests/*"],
       "@components/*": ["src/components/*"],
+      "@models/*": ["src/models/*"],
+      "@screens/*": ["src/screens/*"],
+      "@stores/*": ["src/store/*"],
   },
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
