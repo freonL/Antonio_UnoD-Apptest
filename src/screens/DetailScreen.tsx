@@ -2,7 +2,6 @@ import * as React from 'react';
 import tw from 'twrnc';
 import {
   Alert,
-  Button,
   Image,
   StyleSheet,
   Text,
@@ -15,7 +14,15 @@ interface IProps {
 }
 
 const DetailScreen: React.FC<IProps> = ({navigation}) => {
-  const editHandler = () => {};
+  const editHandler = () => {
+    navigation.push('Form', {
+      id: navigation.getParam('id'),
+      firstName: navigation.getParam('firstName'),
+      lastName: navigation.getParam('lastName'),
+      age: navigation.getParam('age'),
+      photo: navigation.getParam('photo'),
+    });
+  };
 
   const deleteHandler = () => {
     return Alert.alert(
@@ -24,7 +31,9 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
       [
         {
           text: 'Yes',
-          onPress: () => {},
+          onPress: () => {
+            navigation.goBack();
+          },
         },
 
         {
@@ -82,7 +91,8 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
         </View>
       </View>
       <View style={[tw`absolute inset-x-0 bottom-0 pb-10 `]}>
-        <View
+        <TouchableOpacity
+          onPress={editHandler}
           style={[
             tw`flex flex-row items-center border-2 rounded-md py-2 justify-center mx-3 border-blue-400 `,
           ]}>
@@ -91,7 +101,7 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
             style={style.iconBlue}
           />
           <Text style={[tw`ml-1 text-blue-500 text-lg`]}>Edit</Text>
-        </View>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={deleteHandler}
