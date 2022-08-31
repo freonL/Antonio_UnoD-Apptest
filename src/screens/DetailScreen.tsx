@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import {IContact} from '../contactSlice';
+import {IContact, removeContact} from '../contactSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../store';
 
@@ -45,7 +45,7 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
         {
           text: 'Yes',
           onPress: () => {
-            // dispatch(removeContact({id: navigation.getParam('id')}));
+            dispatch(removeContact({id: navigation.getParam('id')}));
             navigation.goBack();
           },
         },

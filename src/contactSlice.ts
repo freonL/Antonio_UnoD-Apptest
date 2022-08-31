@@ -62,14 +62,7 @@ export const updateContact = createAsyncThunk<
       fields,
     );
     return response.data;
-  } catch (err) {
-    // let error: AxiosError<any> = err; // cast the error for access
-    // if (!error.response) {
-    //   throw err;
-    // }
-    // We got validation errors, let's return those so we can reference in our component and set form errors
-    // return rejectWithValue(error.response.data);
-  }
+  } catch (err) {}
 });
 
 export const fetchContactByID = createAsyncThunk<
@@ -85,14 +78,23 @@ export const fetchContactByID = createAsyncThunk<
       `https://simple-contact-crud.herokuapp.com/contact/${id}`,
     );
     return response.data;
-  } catch (err) {
-    // let error: AxiosError<any> = err; // cast the error for access
-    // if (!error.response) {
-    //   throw err;
-    // }
-    // We got validation errors, let's return those so we can reference in our component and set form errors
-    // return rejectWithValue(error.response.data);
+  } catch (err) {}
+});
+
+export const removeContact = createAsyncThunk<
+  IContact,
+  {id: string},
+  {
+    rejectValue: any;
   }
+>('contact/removeContact', async (userData, {rejectWithValue}) => {
+  try {
+    const {id} = userData;
+    const response = await axios.delete(
+      `https://simple-contact-crud.herokuapp.com/contact/${id}`,
+    );
+    return response.data;
+  } catch (err) {}
 });
 
 const contactSlice = createSlice({
@@ -142,6 +144,19 @@ const contactSlice = createSlice({
       state.contact = action.payload;
     });
     builder.addCase(fetchContactByID.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error?.message || '';
+      state.contact = <IContact>{};
+    });
+
+    builder.addCase(removeContact.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(removeContact.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = '';
+    });
+    builder.addCase(removeContact.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error?.message || '';
       state.contact = <IContact>{};
