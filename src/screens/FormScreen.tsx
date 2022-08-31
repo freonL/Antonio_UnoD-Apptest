@@ -8,9 +8,8 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
-import {updateContact} from '../contactSlice';
-// import {addContact, updateContact} from '../contactSlice';
-import {RootState} from '../store';
+import {updateContact, createContact} from '../contactSlice';
+
 import {IContact} from '../stores/types';
 
 interface IProps {
@@ -29,11 +28,13 @@ const FormScreen: React.FC<IProps> = ({navigation}) => {
   );
 
   const [photoPath, pathChange] = React.useState(navigation.getParam('photo'));
-  // const contactLs = useSelector(
-  //   (state: RootState) => state.contactList.contacts,
-  // );
+
   const dispatch = useDispatch();
   const saveHandler = () => {
+    if (age < 1 || age > 200) {
+      return;
+    }
+
     const contact: IContact = {
       firstName: firstName,
       lastName: lastName,
@@ -41,8 +42,11 @@ const FormScreen: React.FC<IProps> = ({navigation}) => {
       photo: photoPath,
     };
 
-    if (navigation.getParam('id') === '') {
-      // dispatch(createContact(contact));
+    if (
+      navigation.getParam('id') === undefined ||
+      navigation.getParam('id') === ''
+    ) {
+      dispatch(createContact(contact));
     } else {
       dispatch(updateContact({id: navigation.getParam('id'), ...contact}));
     }

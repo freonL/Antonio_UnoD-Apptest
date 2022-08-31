@@ -2,6 +2,7 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import * as apiClient from './apiClient';
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import axios, {AxiosError} from 'axios';
+import {Alert} from 'react-native';
 
 export interface IContact {
   id?: string;
@@ -36,17 +37,20 @@ export const fetchContact = createAsyncThunk(
   },
 );
 
-// export const createContact = createAsyncThunk<IContact>(
-//   'contact/createContact',
-//   async (data: IContact) => {
-//     const resp = await axios.post(
-//       'https://simple-contact-crud.herokuapp.com/contact',
-//       data,
-//     );
-//     console.log(resp);
-//     return data;
-//   },
-// );
+export const createContact = createAsyncThunk<
+  IContact,
+  IContact,
+  {
+    rejectValue: any;
+  }
+>('contact/createContact', async (data: IContact, {rejectWithValue}) => {
+  const resp = await axios.post(
+    'https://simple-contact-crud.herokuapp.com/contact',
+    data,
+  );
+
+  return data;
+});
 
 export const updateContact = createAsyncThunk<
   IContact,
@@ -62,7 +66,9 @@ export const updateContact = createAsyncThunk<
       fields,
     );
     return response.data;
-  } catch (err) {}
+  } catch (err) {
+    throw new Error('error');
+  }
 });
 
 export const fetchContactByID = createAsyncThunk<
@@ -100,25 +106,7 @@ export const removeContact = createAsyncThunk<
 const contactSlice = createSlice({
   name: 'contact',
   initialState: initialState,
-  reducers: {
-    // addContact: (state, action) => {
-    //   state.contacts = [...state.contacts, action.payload];
-    // },
-    // updateContact: (state, action) => {
-    //   const idx = state.contacts.findIndex(
-    //     item => item.id === action.payload.id,
-    //   );
-    //   if (idx === -1) {
-    //     return;
-    //   }
-    //   state.contacts[idx] = action.payload;
-    // },
-    // removeContact: (state, action) => {
-    //   state.contacts = state.contacts.filter(
-    //     item => item.id !== action.payload.id,
-    //   );
-    // },
-  },
+  reducers: {},
 
   extraReducers: builder => {
     builder.addCase(fetchContact.pending, state => {
@@ -152,7 +140,7 @@ const contactSlice = createSlice({
     builder.addCase(removeContact.pending, state => {
       state.loading = true;
     });
-    builder.addCase(removeContact.fulfilled, (state, action) => {
+    builder.addCase(removeContact.fulfilled, state => {
       state.loading = false;
       state.error = '';
     });
@@ -176,19 +164,19 @@ const contactSlice = createSlice({
       state.contacts = [];
     });
 
-    // builder.addCase(createContact.pending, state => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(createContact.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.error = '';
-    //   state.contacts = [...state.contacts, action.payload];
-    // });
-    // builder.addCase(createContact.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.error?.message || '';
-    //   state.contacts = [];
-    // });
+    builder.addCase(createContact.pending, state => {
+      state.loading = true;
+    });
+    builder.addCase(createContact.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = '';
+      state.contacts = [...state.contacts, action.payload];
+    });
+    builder.addCase(createContact.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error?.message || '';
+      state.contacts = [];
+    });
   },
 });
 

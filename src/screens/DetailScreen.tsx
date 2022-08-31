@@ -46,6 +46,7 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
           text: 'Yes',
           onPress: () => {
             dispatch(removeContact({id: navigation.getParam('id')}));
+
             navigation.goBack();
           },
         },
