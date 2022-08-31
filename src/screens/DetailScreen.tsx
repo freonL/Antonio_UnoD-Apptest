@@ -9,18 +9,31 @@ import {
   View,
 } from 'react-native';
 
+import {IContact} from '../contactSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../store';
+
 interface IProps {
   navigation: any;
 }
 
 const DetailScreen: React.FC<IProps> = ({navigation}) => {
+  const dispatch = useDispatch();
+  const contactLs = useSelector(
+    (state: RootState) => state.contactList.contacts,
+  );
+
+  const data = contactLs.find(
+    (item: IContact) => item.id === navigation.getParam('id'),
+  );
+
   const editHandler = () => {
     navigation.push('Form', {
       id: navigation.getParam('id'),
-      firstName: navigation.getParam('firstName'),
-      lastName: navigation.getParam('lastName'),
-      age: navigation.getParam('age'),
-      photo: navigation.getParam('photo'),
+      firstName: data?.firstName,
+      lastName: data?.lastName,
+      age: data?.age,
+      photo: data?.photo,
     });
   };
 
@@ -32,6 +45,7 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
         {
           text: 'Yes',
           onPress: () => {
+            // dispatch(removeContact({id: navigation.getParam('id')}));
             navigation.goBack();
           },
         },
@@ -50,13 +64,13 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
           <Image
             style={[tw`h-full w-full`]}
             source={{
-              uri: navigation.getParam('photo').replace('http', 'https'),
+              uri: data?.photo.replace('http://', 'https://'),
             }}
           />
         ) : (
           <Text style={[tw`text-white mx-auto my-auto text-6xl`]}>
-            {navigation.getParam('firstName')[0]}
-            {navigation.getParam('lastName')[0]}
+            {data?.firstName[0]}
+            {data?.lastName[0]}
           </Text>
         )}
       </View>
@@ -67,11 +81,11 @@ const DetailScreen: React.FC<IProps> = ({navigation}) => {
         ]}>
         <View style={[tw`border-b pb-1 border-gray-200`]}>
           <Text style={[tw`text-base font-medium `]}>
-            {navigation.getParam('firstName')} {navigation.getParam('lastName')}
+            {data?.firstName} {data?.lastName}
           </Text>
         </View>
         <View style={[tw`mt-2`]}>
-          <Text>Age: {navigation.getParam('age')}</Text>
+          <Text>Age: {data?.age}</Text>
         </View>
       </View>
       <View

@@ -6,7 +6,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import tw from 'tailwind-react-native-classnames';
+import {updateContact} from '../contactSlice';
+// import {addContact, updateContact} from '../contactSlice';
+import {RootState} from '../store';
+import {IContact} from '../stores/types';
 
 interface IProps {
   navigation: any;
@@ -23,12 +28,24 @@ const FormScreen: React.FC<IProps> = ({navigation}) => {
     navigation.getParam('age') || 0,
   );
 
+  const [photoPath, pathChange] = React.useState(navigation.getParam('photo'));
+  // const contactLs = useSelector(
+  //   (state: RootState) => state.contactList.contacts,
+  // );
+  const dispatch = useDispatch();
   const saveHandler = () => {
-    const contact = {
+    const contact: IContact = {
       firstName: firstName,
       lastName: lastName,
       age: age,
+      photo: photoPath,
     };
+
+    if (navigation.getParam('id') === '') {
+      // dispatch(createContact(contact));
+    } else {
+      dispatch(updateContact({id: navigation.getParam('id'), ...contact}));
+    }
 
     navigation.goBack();
   };
@@ -64,6 +81,15 @@ const FormScreen: React.FC<IProps> = ({navigation}) => {
           }}
           value={age.toString()}
           keyboardType="numeric"
+        />
+      </View>
+
+      <View style={[tw`mt-2 px-4`]}>
+        <Text>Photo Path</Text>
+        <TextInput
+          style={[tw`border m-3 p-2 rounded-md border-gray-500`]}
+          onChangeText={pathChange}
+          value={photoPath}
         />
       </View>
 

@@ -13,13 +13,13 @@ const ContactItem: React.FC<IProps> = ({data}) => {
       style={[
         tw`flex flex-row w-full  p-4 rounded-md mb-2 last:mb-0 bg-white  shadow-black shadow-offset-1 shadow-opacity-10 shadow-radius-1`,
       ]}>
-      {data.photo === 'N/A' ? (
+      {data?.photo === 'N/A' || data?.photo === '' ? (
         <View style={[tw`rounded-full w-20 h-20 border`]} />
       ) : (
         <Image
           style={[tw`rounded-full w-20 h-20`]}
           source={{
-            uri: data.photo.replace('http', 'https'),
+            uri: data?.photo?.replace('http://', 'https://'),
           }}
         />
       )}

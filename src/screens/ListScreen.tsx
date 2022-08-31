@@ -1,91 +1,40 @@
 import * as React from 'react';
 import {
-  Button,
+  Alert,
   FlatList,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import ContactItem from '../components/ContactItem';
 import tw from 'tailwind-react-native-classnames';
 import {IContact} from '../stores/types';
-import NavBar from '../components/FloatButton';
+
 import FloatButton from '../components/FloatButton';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../store';
+import {fetchContact} from '../contactSlice';
 
 interface IProps {
   navigation: any;
 }
 
 const ListScreen: React.FC<IProps> = ({navigation}) => {
-  const [dataLs, setDataLs] = React.useState<IContact[]>([
-    {
-      id: '93ad6070-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Bilbo',
-      lastName: 'Baggins',
-      age: 111,
-      photo:
-        'http://vignette1.wikia.nocookie.net/lotr/images/6/68/Bilbo_baggins.jpg/revision/latest?cb=20130202022550',
-    },
-    {
-      id: 'b3abd640-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Luke',
-      lastName: 'Skywalker',
-      age: 20,
-      photo: 'N/A',
-    },
-    {
-      id: '93ad6070-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Bilbo',
-      lastName: 'Baggins',
-      age: 111,
-      photo:
-        'http://vignette1.wikia.nocookie.net/lotr/images/6/68/Bilbo_baggins.jpg/revision/latest?cb=20130202022550',
-    },
-    {
-      id: 'b3abd640-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Luke',
-      lastName: 'Skywalker',
-      age: 20,
-      photo: 'N/A',
-    },
-    {
-      id: '93ad6070-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Bilbo',
-      lastName: 'Baggins',
-      age: 111,
-      photo:
-        'http://vignette1.wikia.nocookie.net/lotr/images/6/68/Bilbo_baggins.jpg/revision/latest?cb=20130202022550',
-    },
-    {
-      id: 'b3abd640-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Luke',
-      lastName: 'Skywalker',
-      age: 20,
-      photo: 'N/A',
-    },
-    {
-      id: '93ad6070-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Bilbo',
-      lastName: 'Baggins',
-      age: 111,
-      photo:
-        'http://vignette1.wikia.nocookie.net/lotr/images/6/68/Bilbo_baggins.jpg/revision/latest?cb=20130202022550',
-    },
-    {
-      id: 'b3abd640-c92b-11e8-b02f-cbfa15db428b',
-      firstName: 'Luke',
-      lastName: 'Skywalker',
-      age: 20,
-      photo: 'N/A',
-    },
-  ]);
+  const dispatch = useDispatch();
+
+  const contactLs = useSelector(
+    (state: RootState) => state.contactList.contacts,
+  );
+
+  React.useEffect(() => {
+    dispatch(fetchContact());
+  });
 
   return (
     <View style={styles.container}>
       <FlatList
         style={[tw`flex flex-col w-full px-2`]}
-        data={dataLs}
+        data={contactLs}
         renderItem={({item, index}) => (
           <TouchableOpacity
             key={index}
